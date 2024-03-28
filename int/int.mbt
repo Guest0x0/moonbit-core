@@ -57,3 +57,33 @@ test "int.num" {
   let y = 7
   test_num(x, y, x + y, x * y, x - y, x / y, -1)?
 }
+
+pub fn to_string(self : Int) -> String {
+  fn abs(n : Int) -> Int {
+    if n < 0 {
+      0 - n
+    } else {
+      n
+    }
+  }
+
+  // The min and max value of i32 are -2147483648 and 2147483647,
+  // so max=11 is enough.
+  let buf = Buffer::make(11)
+
+  if self < 0 {
+    buf.write_char('-')
+  }
+
+  fn write_digits(num) {
+    let num2 = num / 10
+    if num2 != 0 {
+      write_digits(num2)
+    }
+    buf.write_char(Char::from_int((abs(num % 10) + 48)))
+  }
+
+  write_digits(self)
+
+  buf.to_string()
+}
